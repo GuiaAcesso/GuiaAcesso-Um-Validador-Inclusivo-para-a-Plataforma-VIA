@@ -1,0 +1,121 @@
+from selenium import webdriver
+-> Importa o módulo principal do Selenium, usado para controlar o navegador.
+--------------------------------------------------------------------------------------------------------------------
+from selenium.webdriver.chrome.service import Service
+-> Importa a classe Service, usada para configurar o serviço do ChromeDriver.
+--------------------------------------------------------------------------------------------------------------------
+from webdriver_manager.chrome import ChromeDriverManager
+-> Importa uma ferramenta que baixa automaticamente a versão correta do ChromeDriver.
+--------------------------------------------------------------------------------------------------------------------
+from axe_selenium_python import Axe
+-> Importa a biblioteca AXE, usada para rodar testes de acessibilidade no navegador.
+--------------------------------------------------------------------------------------------------------------------
+import json
+-> Permite salvar dados em arquivos JSON.
+--------------------------------------------------------------------------------------------------------------------
+import time
+-> Permite usar sleep() para esperar alguns segundos.
+--------------------------------------------------------------------------------------------------------------------
+import os
+-> Permite criar pastas, verificar arquivos, etc.
+--------------------------------------------------------------------------------------------------------------------
+def gerar_relatorio_resumido(resultados):
+    resumo = []
+-> Cria uma lista vazia onde será guardado o relatório resumido.
+--------------------------------------------------------------------------------------------------------------------
+    for violacao in resultados["violations"]:
+-> Percorre cada violação encontrada pelo AXE.
+--------------------------------------------------------------------------------------------------------------------
+        item = {
+            "regra": violacao.get("id"),
+            "impacto": violacao.get("impact"),
+            "descricao": violacao.get("description"),
+            "ajuda": violacao.get("help"),
+            "elementos_afetados": len(violacao.get("nodes", []))
+        }
+-> Cria um dicionário com informações simplificadas sobre cada violação:
+
+-id da regra quebrada
+-nível de impacto (serious, moderate, etc.)
+-descrição do problema
+-mensagem de ajuda
+-quantos elementos na página foram afetados
+--------------------------------------------------------------------------------------------------------------------
+        resumo.append(item)
+-> Adiciona essa violação resumida à lista.
+--------------------------------------------------------------------------------------------------------------------
+    return resumo
+-> Retorna o relatório resumido.
+--------------------------------------------------------------------------------------------------------------------
+def avaliar_acessibilidade(url):
+-> Função que roda os testes de acessibilidade na URL.
+--------------------------------------------------------------------------------------------------------------------
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+-> Abre o navegador Chrome usando o ChromeDriver baixado automaticamente.
+--------------------------------------------------------------------------------------------------------------------
+    try:
+        print(f"Acessando a seguinte url: {url}")
+-> Mensagem na tela indicando a página que será analisada.
+--------------------------------------------------------------------------------------------------------------------
+        driver.get(url)
+-> O navegador abre a URL.
+--------------------------------------------------------------------------------------------------------------------
+        time.sleep(2)
+-> Aguarda 2 segundos para a página carregar.
+--------------------------------------------------------------------------------------------------------------------
+        axe = Axe(driver)
+-> Cria o objeto do AXE conectado ao navegador.
+--------------------------------------------------------------------------------------------------------------------
+        axe.inject()
+-> Injeta o código JavaScript do AXE dentro da página para poder analisá-la.
+--------------------------------------------------------------------------------------------------------------------
+        print("Fazendo de acessibilidade...")
+-> Mensagem indicando o início da análise.
+--------------------------------------------------------------------------------------------------------------------
+        resultados = axe.run()
+-> Roda a análise completa e obtém os resultados.
+--------------------------------------------------------------------------------------------------------------------
+        violacoes = resultados["violations"]
+-> Extrai apenas a lista de violações.
+--------------------------------------------------------------------------------------------------------------------
+        print(f"Total de violações encontradas: {len(violacoes)}")
+-> Mostra quantas violações foram encontradas.
+--------------------------------------------------------------------------------------------------------------------
+        if not os.path.exists("reports"):
+            os.makedirs("reports")
+-> Se a pasta reports não existir, ela é criada.
+--------------------------------------------------------------------------------------------------------------------
+        relatorio_completo = "reports/resultado_axe_completo.json"
+        relatorio_resumido = "reports/resultado_axe_resumido.json"
+-> Define onde os arquivos serão salvos.
+--------------------------------------------------------------------------------------------------------------------
+        with open(relatorio_completo, "w", encoding="utf-8") as f:
+            json.dump(resultados, f, ensure_ascii=False, indent=2)
+-> Cria o arquivo JSON completo contendo todos os detalhes da análise.
+--------------------------------------------------------------------------------------------------------------------
+        resumo = gerar_relatorio_resumido(resultados)
+-> Gera o relatório resumido.
+--------------------------------------------------------------------------------------------------------------------
+        with open(relatorio_resumido, "w", encoding="utf-8") as f:
+            json.dump(resumo, f, ensure_ascii=False, indent=2)
+-> Salva o resumo como JSON.
+--------------------------------------------------------------------------------------------------------------------
+        print(f"Relatório completo salvo em: {relatorio_completo}")
+        print(f"Relatório resumido salvo em: {relatorio_resumido}")
+-> Mostra os caminhos dos arquivos criados.
+--------------------------------------------------------------------------------------------------------------------
+        return resultados
+-> Retorna o resultado completo, caso você queira usar em outro lugar.
+--------------------------------------------------------------------------------------------------------------------
+    finally:
+        driver.quit()
+-> Independentemente de erro, fecha o navegador.
+--------------------------------------------------------------------------------------------------------------------
+if __name__ == "__main__":
+-> Executa o código apenas se o arquivo for rodado diretamente (não importado).
+--------------------------------------------------------------------------------------------------------------------
+    url = input("Digite a URL que você deseja avaliar: ")
+-> Pede ao usuário uma URL.
+--------------------------------------------------------------------------------------------------------------------
+    avaliar_acessibilidade(url)
+-> Chama a função principal de avaliação.
