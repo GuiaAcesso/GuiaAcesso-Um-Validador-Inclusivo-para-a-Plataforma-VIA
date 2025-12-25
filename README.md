@@ -5,3 +5,5 @@ VIA (Validador Inclusivo de Acessibilidade) — Ferramenta que identifica, corri
 pip install selenium
 pip install webdriver-manager
 pip install axe-selenium-python
+pip install --upgrade google-genai
+

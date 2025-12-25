@@ -1,0 +1,16 @@
+[
+  {
+    "regra": "landmark-one-main",
+    "impacto": "moderate",
+    "descricao": "Ensures the page has only one main landmark and each iframe in the page has at most one main landmark",
+    "ajuda": "Page must have one main landmark",
+    "elementos_afetados": 1
+  },
+  {
+    "regra": "region",
+    "impacto": "moderate",
+    "descricao": "Ensures all page content is contained by landmarks",
+    "ajuda": "All page content must be contained by landmarks",
+    "elementos_afetados": 1
+  }
+]
