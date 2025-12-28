@@ -6,15 +6,24 @@
       "A"
     ],
     "descricao": "Ensures role attribute has an appropriate value for the element",
-    "elementos_afetados": 3
+    "elementos_afetados": 6
   },
   {
-    "regra": "aria-valid-attr-value",
-    "impacto": "critical",
+    "regra": "color-contrast",
+    "impacto": "serious",
+    "nivel_wcag": [
+      "AA"
+    ],
+    "descricao": "Ensures the contrast between foreground and background colors meets WCAG 2 AA contrast ratio thresholds",
+    "elementos_afetados": 2
+  },
+  {
+    "regra": "duplicate-id-active",
+    "impacto": "serious",
     "nivel_wcag": [
       "A"
     ],
-    "descricao": "Ensures all ARIA attributes have valid values",
+    "descricao": "Ensures every id attribute value of active elements is unique",
     "elementos_afetados": 1
   },
   {
@@ -27,17 +36,19 @@
     "elementos_afetados": 2
   },
   {
-    "regra": "landmark-one-main",
+    "regra": "heading-order",
     "impacto": "moderate",
     "nivel_wcag": [],
-    "descricao": "Ensures the page has only one main landmark and each iframe in the page has at most one main landmark",
+    "descricao": "Ensures the order of headings is semantically correct",
     "elementos_afetados": 1
   },
   {
-    "regra": "region",
-    "impacto": "moderate",
-    "nivel_wcag": [],
-    "descricao": "Ensures all page content is contained by landmarks",
+    "regra": "label",
+    "impacto": "critical",
+    "nivel_wcag": [
+      "A"
+    ],
+    "descricao": "Ensures every form element has a label",
     "elementos_afetados": 1
   }
 ]

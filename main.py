@@ -1,210 +1,143 @@
+import json
+import os
+import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.edge.service import Service as EdgeService
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.edge.options import Options as EdgeOptions
-
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.microsoft import EdgeChromiumDriverManager
-
 from axe_selenium_python import Axe
-import json
-import time
-import os
-
-# 🔹 SDK NOVO DO GEMINI
 from google import genai
 
-# 🔐 CONFIGURE SUA API KEY AQUI
-client = genai.Client(api_key="AIzaSyAq7F4pLh9vO5uDNaYfAxkrVYpebBIX5l0")
 
-# --------------------------------------------------
-# Extrai nome do site
-# --------------------------------------------------
-def extrair_nome_site(url):
-    if url.startswith("http://"):
-        url = url[7:]
-    elif url.startswith("https://"):
-        url = url[8:]
-    if url.startswith("www."):
-        url = url[4:]
-    if "/" in url:
-        url = url.split("/")[0]
-    return url.split(".")[0]
+REPORTS_DIR = "reports"
+TOTAL_CRITERIOS_WCAG = 50
+API_KEY_GEMINI = "AIzaSyCmx1TP38Z_HjI7ZvOndMHibVCXR5cr0J8"
 
 
-# --------------------------------------------------
-# Identifica nível WCAG
-# --------------------------------------------------
-def identificar_nivel_wcag(tags):
-    niveis = []
+def iniciar_gemini(api_key: str):
+    if not api_key:
+        return None
+    try:
+        return genai.Client(api_key=api_key)
+    except Exception:
+        return None
+
+
+gemini_client = iniciar_gemini(API_KEY_GEMINI)
+
+
+def extrair_nome_site(url: str) -> str:
+    for prefixo in ("https://", "http://", "www."):
+        url = url.replace(prefixo, "")
+    return url.split("/")[0].split(".")[0]
+
+
+def identificar_nivel_wcag(tags: list[str]) -> list[str]:
+    niveis = set()
     for tag in tags:
         if tag.endswith("aaa"):
-            niveis.append("AAA")
+            niveis.add("AAA")
         elif tag.endswith("aa"):
-            niveis.append("AA")
+            niveis.add("AA")
         elif tag.endswith("a"):
-            niveis.append("A")
-    return list(set(niveis))
+            niveis.add("A")
+    return sorted(niveis)
 
 
-# --------------------------------------------------
-# Calcula conformidade AA
-# --------------------------------------------------
-def calcular_conformidade_aa(violacoes):
-    TOTAL_CRITERIOS_AA_AUTOMATIZAVEIS = 50
-    violacoes_aa = 0
-
-    for v in violacoes:
-        if any(tag.endswith("a") or tag.endswith("aa") for tag in v.get("tags", [])):
-            violacoes_aa += 1
-
-    aprovados = TOTAL_CRITERIOS_AA_AUTOMATIZAVEIS - violacoes_aa
-    porcentagem = (aprovados / TOTAL_CRITERIOS_AA_AUTOMATIZAVEIS) * 100
-    return round(max(porcentagem, 0), 2)
-
-
-# --------------------------------------------------
-# Relatório resumido técnico
-# --------------------------------------------------
-def gerar_relatorio_resumido(resultados):
-    resumo = []
-    for violacao in resultados.get("violations", []):
-        resumo.append({
-            "regra": violacao.get("id"),
-            "impacto": violacao.get("impact"),
-            "nivel_wcag": identificar_nivel_wcag(violacao.get("tags", [])),
-            "descricao": violacao.get("description"),
-            "elementos_afetados": len(violacao.get("nodes", []))
-        })
-    return resumo
-
-
-# --------------------------------------------------
-# GERA RELATÓRIOS HUMANIZADOS (TXT) COM GEMINI
-# --------------------------------------------------
-def gerar_relatorios_humanizados(resultados, nome_site):
-    prompt = f"""
-Você é um especialista em acessibilidade digital seguindo as diretrizes WCAG.
-
-Explique os problemas abaixo para pessoas LEIGAS.
-
-Crie DOIS TEXTOS:
-1) RELATÓRIO COMPLETO: explicação detalhada de cada erro, impacto para pessoas com deficiência e resumo final.
-2) RELATÓRIO RESUMIDO: visão geral simples, curta e direta.
-
-Inclua a porcentagem de conformidade WCAG AA: {resultados['conformidade_wcag']['porcentagem']}%
-
-Evite termos técnicos sem explicação.
-Não use emojis.
-
-Problemas encontrados:
-{json.dumps(resultados['violations'], ensure_ascii=False, indent=2)}
-
-Responda exatamente neste formato:
-
----RELATORIO_COMPLETO---
-(TEXTO)
-
----RELATORIO_RESUMIDO---
-(TEXTO)
-"""
-
-    response = client.models.generate_content(
-        model="models/text-bison-001",
-        contents=prompt
+def calcular_conformidade_aa(violacoes: list[dict]) -> float:
+    violacoes_aa = sum(
+        1
+        for v in violacoes
+        if any(tag.endswith(("a", "aa")) for tag in v.get("tags", []))
     )
-
-    texto = response.text
-
-    if "---RELATORIO_RESUMIDO---" not in texto:
-        raise RuntimeError("A IA não retornou no formato esperado.")
-
-    completo, resumido = texto.split("---RELATORIO_RESUMIDO---")
-
-    completo = completo.replace("---RELATORIO_COMPLETO---", "").strip()
-    resumido = resumido.strip()
-
-    with open(f"reports/{nome_site}_relatorio_completo.txt", "w", encoding="utf-8") as f:
-        f.write(completo)
-
-    with open(f"reports/{nome_site}_relatorio_resumido.txt", "w", encoding="utf-8") as f:
-        f.write(resumido)
-
-    prompt = f"""
-Você é um especialista em acessibilidade digital seguindo as diretrizes WCAG.
-
-Explique os problemas abaixo para pessoas LEIGAS.
-
-Crie DOIS TEXTOS:
-1) RELATÓRIO COMPLETO: explicação detalhada de cada erro, impacto para pessoas com deficiência e resumo final.
-2) RELATÓRIO RESUMIDO: visão geral simples, curta e direta.
-
-Inclua a porcentagem de conformidade WCAG AA: {resultados['conformidade_wcag']['porcentagem']}%
-
-Evite termos técnicos sem explicação.
-Não use emojis.
-
-Problemas encontrados:
-{json.dumps(resultados['violations'], ensure_ascii=False, indent=2)}
-
-Responda exatamente neste formato:
-
----RELATORIO_COMPLETO---
-(TEXTO)
-
----RELATORIO_RESUMIDO---
-(TEXTO)
-"""
-
-    response = client.models.generate_content(
-        model="models/text-bison-001",
-        contents=prompt
-    )
-
-    texto = response.text
-
-    completo, resumido = texto.split("---RELATORIO_RESUMIDO---")
-
-    completo = completo.replace("---RELATORIO_COMPLETO---", "").strip()
-    resumido = resumido.strip()
-
-    with open(f"reports/{nome_site}_relatorio_completo.txt", "w", encoding="utf-8") as f:
-        f.write(completo)
-
-    with open(f"reports/{nome_site}_relatorio_resumido.txt", "w", encoding="utf-8") as f:
-        f.write(resumido)
+    aprovados = TOTAL_CRITERIOS_WCAG - violacoes_aa
+    return round(max((aprovados / TOTAL_CRITERIOS_WCAG) * 100, 0), 2)
 
 
-# --------------------------------------------------
-# Inicia navegador
-# --------------------------------------------------
-def iniciar_driver():
-    try:
-        chrome_options = ChromeOptions()
-        chrome_options.add_argument("--start-maximized")
-        return webdriver.Chrome(
-            service=ChromeService(ChromeDriverManager().install()),
-            options=chrome_options
-        )
-    except:
-        edge_options = EdgeOptions()
-        edge_options.add_argument("--start-maximized")
-        return webdriver.Edge(
-            service=EdgeService(EdgeChromiumDriverManager().install()),
-            options=edge_options
+def gerar_relatorio_resumido(resultados: dict) -> dict:
+    return {
+        "conformidade_wcag": resultados["conformidade_wcag"],
+        "problemas": [
+            {
+                "regra": v.get("id"),
+                "impacto": v.get("impact"),
+                "nivel_wcag": identificar_nivel_wcag(v.get("tags", [])),
+                "descricao": v.get("description"),
+                "elementos_afetados": len(v.get("nodes", [])),
+            }
+            for v in resultados.get("violations", [])
+        ],
+    }
+
+
+def gerar_relatorio_manual(caminho_json: str, nome_site: str) -> None:
+    with open(caminho_json, encoding="utf-8") as f:
+        dados = json.load(f)
+
+    linhas = [
+        "RELATÓRIO DE ACESSIBILIDADE DIGITAL\n",
+        f"Conformidade WCAG {dados['conformidade_wcag']['nivel']}: "
+        f"{dados['conformidade_wcag']['porcentagem']}%\n",
+        "PROBLEMAS IDENTIFICADOS:\n",
+    ]
+
+    for i, p in enumerate(dados["problemas"], start=1):
+        linhas.extend(
+            [
+                f"{i}. {p['descricao']}",
+                f"   Impacto: {p['impacto']}",
+                f"   Nível WCAG: {', '.join(p['nivel_wcag'])}",
+                f"   Elementos afetados: {p['elementos_afetados']}\n",
+            ]
         )
 
+    linhas.extend(
+        ["CONCLUSÃO", "Correções são recomendadas para melhoria da acessibilidade."]
+    )
 
-# --------------------------------------------------
-# Avaliação principal
-# --------------------------------------------------
-def avaliar_acessibilidade(url):
+    caminho_txt = os.path.join(REPORTS_DIR, f"{nome_site}_relatorio_humanizado.txt")
+    with open(caminho_txt, "w", encoding="utf-8") as f:
+        f.write("\n".join(linhas))
+
+    print("rlatório humanizado gerado manual")
+
+
+def gerar_relatorio_gemini(caminho_json: str, nome_site: str) -> None:
+    if not gemini_client:
+        raise RuntimeError
+
+    with open(caminho_json, encoding="utf-8") as f:
+        dados = json.load(f)
+
+    prompt = (
+        "Crie um relatório de acessibilidade para leigos usando apenas os dados abaixo.\n\n"
+        f"{json.dumps(dados, ensure_ascii=False, indent=2)}"
+    )
+
+    response = gemini_client.models.generate_content(
+        model="gemini-1.0-pro", contents=prompt
+    )
+
+    caminho_txt = os.path.join(REPORTS_DIR, f"{nome_site}_relatorio_humanizado.txt")
+    with open(caminho_txt, "w", encoding="utf-8") as f:
+        f.write(response.text.strip())
+
+    print("relatório humanizado gerado por IA finalmente funciona")
+
+
+def iniciar_driver() -> webdriver.Chrome:
+    return webdriver.Chrome(
+        service=ChromeService(ChromeDriverManager().install()), options=ChromeOptions()
+    )
+
+
+def avaliar_acessibilidade(url: str) -> None:
+    os.makedirs(REPORTS_DIR, exist_ok=True)
+
     driver = iniciar_driver()
     nome_site = extrair_nome_site(url)
 
     try:
-        print(f"Acessando {url}")
         driver.get(url)
         time.sleep(2)
 
@@ -212,34 +145,32 @@ def avaliar_acessibilidade(url):
         axe.inject()
         resultados = axe.run()
 
-        violacoes = resultados.get("violations", [])
-        porcentagem_aa = calcular_conformidade_aa(violacoes)
-
         resultados["conformidade_wcag"] = {
             "nivel": "AA",
-            "porcentagem": porcentagem_aa
+            "porcentagem": calcular_conformidade_aa(resultados.get("violations", [])),
         }
 
-        os.makedirs("reports", exist_ok=True)
+        caminho_completo = os.path.join(REPORTS_DIR, f"{nome_site}_completo.json")
+        caminho_resumido = os.path.join(REPORTS_DIR, f"{nome_site}_resumido.json")
 
-        with open(f"reports/{nome_site}_completo.json", "w", encoding="utf-8") as f:
+        with open(caminho_completo, "w", encoding="utf-8") as f:
             json.dump(resultados, f, ensure_ascii=False, indent=2)
 
         resumo = gerar_relatorio_resumido(resultados)
-        with open(f"reports/{nome_site}_resumido.json", "w", encoding="utf-8") as f:
+        with open(caminho_resumido, "w", encoding="utf-8") as f:
             json.dump(resumo, f, ensure_ascii=False, indent=2)
 
-        gerar_relatorios_humanizados(resultados, nome_site)
+        try:
+            gerar_relatorio_gemini(caminho_resumido, nome_site)
+        except Exception:
+            gerar_relatorio_manual(caminho_resumido, nome_site)
 
-        print("✔ Relatórios gerados com sucesso em /reports")
+        print("Processo finalizado com sucesso.")
 
     finally:
         driver.quit()
 
 
-# --------------------------------------------------
-# Execução
-# --------------------------------------------------
 if __name__ == "__main__":
-    url = input("Digite a URL que você deseja avaliar: ")
+    url = input("Digite a URL que deseja avaliar: ").strip()
     avaliar_acessibilidade(url)

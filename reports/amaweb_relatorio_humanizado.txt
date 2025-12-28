@@ -1,0 +1,26 @@
+RELATÓRIO DE ACESSIBILIDADE DIGITAL
+
+Conformidade WCAG AA: 96.0%
+
+PROBLEMAS IDENTIFICADOS:
+
+1. Ensures role attribute has an appropriate value for the element
+   Impacto: minor
+   Nível WCAG: A
+   Elementos afetados: 2
+   Explicação simples: Esse problema pode dificultar o uso do site por pessoas com deficiência visual, motora ou cognitiva.
+
+2. Ensures all ARIA attributes have valid values
+   Impacto: critical
+   Nível WCAG: A
+   Elementos afetados: 1
+   Explicação simples: Esse problema pode dificultar o uso do site por pessoas com deficiência visual, motora ou cognitiva.
+
+3. Ensures all page content is contained by landmarks
+   Impacto: moderate
+   Nível WCAG: 
+   Elementos afetados: 1
+   Explicação simples: Esse problema pode dificultar o uso do site por pessoas com deficiência visual, motora ou cognitiva.
+
+CONCLUSÃO
+Recomenda-se corrigir os problemas acima para melhorar a acessibilidade e garantir inclusão digital.
