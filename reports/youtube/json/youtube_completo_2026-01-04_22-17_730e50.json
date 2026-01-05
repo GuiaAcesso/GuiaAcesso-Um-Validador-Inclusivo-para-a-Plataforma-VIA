@@ -12015,7 +12015,7 @@
               "relatedNodes": []
             }
           ],
-          "html": "<script id=\"base-js\" src=\"https://www.youtube.com/s/_/ytmainappweb/_/js/k=ytmainappweb.kevlar_base.en_US.b2eflr0-GLs.es5.O/am=AACAAAAACA/d=1/br=1/rs=AGKMywF9xDRhLRvNjQLcl93RB1T9OhwGQw/m=kevlar_base_module,kevlar_main_module\" nonce=\"\" class=\"js-httpswwwyoutubecoms_ytmainappweb_jskytmainappwebkevlar_baseen_USb2eflr0GLses5OamAACAAAAACAd1br1rsAGKMywF9xDRhLRvNjQLcl93RB1T9OhwGQwmkevlar_base_modulekevlar_main_module\">",
+          "html": "<script id=\"base-js\" src=\"https://www.youtube.com/s/_/ytmainappweb/_/js/k=ytmainappweb.kevlar_base.en_US.ehXENRjiL-M.es5.O/am=AAAABAAACA/d=1/br=1/rs=AGKMywG5GTrG0eE_bjNs4mj-ywdhhxI2og/m=kevlar_base_module,kevlar_main_module\" nonce=\"\" class=\"js-httpswwwyoutubecoms_ytmainappweb_jskytmainappwebkevlar_baseen_USehXENRjiLMes5OamAAAABAAACAd1br1rsAGKMywG5GTrG0eE_bjNs4mjywdhhxI2ogmkevlar_base_modulekevlar_main_module\">",
           "impact": null,
           "none": [],
           "target": [
@@ -13846,7 +13846,7 @@
       ]
     }
   ],
-  "timestamp": "2025-12-26T18:38:38.596Z",
+  "timestamp": "2026-01-05T01:17:19.046Z",
   "url": "https://www.youtube.com/",
   "violations": [
     {

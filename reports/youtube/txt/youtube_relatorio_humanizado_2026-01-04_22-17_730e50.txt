@@ -44,5 +44,4 @@ PROBLEMAS IDENTIFICADOS:
    Nível WCAG: A
    Elementos afetados: 1
 
-CONCLUSÃO
 Correções são recomendadas para melhoria da acessibilidade.

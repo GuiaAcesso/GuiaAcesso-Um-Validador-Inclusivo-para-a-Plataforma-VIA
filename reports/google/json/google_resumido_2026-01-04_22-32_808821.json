@@ -1,7 +1,7 @@
 {
   "conformidade_wcag": {
     "nivel": "AA",
-    "porcentagem": 96.0
+    "porcentagem": 94.0
   },
   "problemas": [
     {
@@ -11,7 +11,7 @@
         "A"
       ],
       "descricao": "Ensures role attribute has an appropriate value for the element",
-      "elementos_afetados": 2
+      "elementos_afetados": 3
     },
     {
       "regra": "aria-valid-attr-value",
@@ -20,6 +20,22 @@
         "A"
       ],
       "descricao": "Ensures all ARIA attributes have valid values",
+      "elementos_afetados": 1
+    },
+    {
+      "regra": "duplicate-id",
+      "impacto": "minor",
+      "nivel_wcag": [
+        "A"
+      ],
+      "descricao": "Ensures every id attribute value is unique",
+      "elementos_afetados": 2
+    },
+    {
+      "regra": "landmark-one-main",
+      "impacto": "moderate",
+      "nivel_wcag": [],
+      "descricao": "Ensures the page has only one main landmark and each iframe in the page has at most one main landmark",
       "elementos_afetados": 1
     },
     {
