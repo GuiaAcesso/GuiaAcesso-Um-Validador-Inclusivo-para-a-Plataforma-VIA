@@ -1,0 +1,58 @@
+{
+  "conformidade_wcag": {
+    "nivel": "AA",
+    "porcentagem": 92.0
+  },
+  "problemas": [
+    {
+      "regra": "aria-allowed-role",
+      "impacto": "minor",
+      "nivel_wcag": [
+        "A"
+      ],
+      "descricao": "Ensures role attribute has an appropriate value for the element",
+      "elementos_afetados": 1
+    },
+    {
+      "regra": "color-contrast",
+      "impacto": "serious",
+      "nivel_wcag": [
+        "AA"
+      ],
+      "descricao": "Ensures the contrast between foreground and background colors meets WCAG 2 AA contrast ratio thresholds",
+      "elementos_afetados": 173
+    },
+    {
+      "regra": "heading-order",
+      "impacto": "moderate",
+      "nivel_wcag": [],
+      "descricao": "Ensures the order of headings is semantically correct",
+      "elementos_afetados": 1
+    },
+    {
+      "regra": "label",
+      "impacto": "critical",
+      "nivel_wcag": [
+        "A"
+      ],
+      "descricao": "Ensures every form element has a label",
+      "elementos_afetados": 1
+    },
+    {
+      "regra": "link-name",
+      "impacto": "serious",
+      "nivel_wcag": [
+        "A"
+      ],
+      "descricao": "Ensures links have discernible text",
+      "elementos_afetados": 1
+    },
+    {
+      "regra": "skip-link",
+      "impacto": "moderate",
+      "nivel_wcag": [],
+      "descricao": "Ensure all skip links have a focusable target",
+      "elementos_afetados": 1
+    }
+  ]
+}

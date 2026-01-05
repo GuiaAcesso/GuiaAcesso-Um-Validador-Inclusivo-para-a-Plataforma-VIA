@@ -3,7 +3,6 @@ import os
 import time
 import uuid
 from datetime import datetime
-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options as ChromeOptions
@@ -12,18 +11,11 @@ from axe_selenium_python import Axe
 from google import genai
 
 
-# =========================
-# CONFIGURAÇÕES GERAIS
-# =========================
-
-REPORTS_DIR = "reports"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+REPORTS_DIR = os.path.join(BASE_DIR, "reports")
 TOTAL_CRITERIOS_WCAG = 50
-API_KEY_GEMINI = "AIzaSyDzzRqVK8pvwDtYj4NZdW7ZTNoziXcveJ0"
+API_KEY_GEMINI = "AIzaSyDZzAoLx69jQYIkFNJveVESKAqJH1XXerE"
 
-
-# =========================
-# UTILIDADES DE ARQUIVO
-# =========================
 
 def timestamp():
     return datetime.now().strftime("%Y-%m-%d_%H-%M")
@@ -55,10 +47,6 @@ def limpar_tudo(pasta_site, dias=30):
                 os.remove(caminho)
 
 
-# =========================
-# GEMINI
-# =========================
-
 def iniciar_gemini(api_key):
     try:
         return genai.Client(api_key=api_key) if api_key else None
@@ -68,10 +56,6 @@ def iniciar_gemini(api_key):
 
 gemini_client = iniciar_gemini(API_KEY_GEMINI)
 
-
-# =========================
-# REGRAS WCAG
-# =========================
 
 def extrair_nome_site(url):
     for p in ("https://", "http://", "www."):
@@ -93,16 +77,13 @@ def identificar_nivel_wcag(tags):
 
 def calcular_conformidade_aa(violacoes):
     violacoes_aa = sum(
-        1 for v in violacoes
+        1
+        for v in violacoes
         if any(tag.endswith(("a", "aa")) for tag in v.get("tags", []))
     )
     aprovados = TOTAL_CRITERIOS_WCAG - violacoes_aa
     return round(max((aprovados / TOTAL_CRITERIOS_WCAG) * 100, 0), 2)
 
-
-# =========================
-# RELATÓRIOS
-# =========================
 
 def gerar_relatorio_resumido(resultados):
     return {
@@ -132,12 +113,14 @@ def gerar_relatorio_manual(caminho_json, caminho_txt):
     ]
 
     for i, p in enumerate(dados["problemas"], 1):
-        linhas.extend([
-            f"{i}. {p['descricao']}",
-            f"   Impacto: {p['impacto']}",
-            f"   Nível WCAG: {', '.join(p['nivel_wcag'])}",
-            f"   Elementos afetados: {p['elementos_afetados']}\n",
-        ])
+        linhas.extend(
+            [
+                f"{i}. {p['descricao']}",
+                f"   Impacto: {p['impacto']}",
+                f"   Nível WCAG: {', '.join(p['nivel_wcag'])}",
+                f"   Elementos afetados: {p['elementos_afetados']}\n",
+            ]
+        )
 
     linhas.append("Correções são recomendadas para melhoria da acessibilidade.")
 
@@ -160,8 +143,7 @@ def gerar_relatorio_gemini(caminho_json, caminho_txt):
     )
 
     resposta = gemini_client.models.generate_content(
-        model="gemini-1.0-pro",
-        contents=prompt
+        model="gemini-1.0-pro", contents=prompt
     )
 
     with open(caminho_txt, "w", encoding="utf-8") as f:
@@ -170,20 +152,11 @@ def gerar_relatorio_gemini(caminho_json, caminho_txt):
     print("Relatório humanizado gerado por IA")
 
 
-# =========================
-# SELENIUM
-# =========================
-
 def iniciar_driver():
     return webdriver.Chrome(
-        service=ChromeService(ChromeDriverManager().install()),
-        options=ChromeOptions()
+        service=ChromeService(ChromeDriverManager().install()), options=ChromeOptions()
     )
 
-
-# =========================
-# PROCESSO PRINCIPAL
-# =========================
 
 def avaliar_acessibilidade(url):
     nome_site = extrair_nome_site(url)
@@ -205,7 +178,7 @@ def avaliar_acessibilidade(url):
 
         resultados["conformidade_wcag"] = {
             "nivel": "AA",
-            "porcentagem": calcular_conformidade_aa(resultados.get("violations", []))
+            "porcentagem": calcular_conformidade_aa(resultados.get("violations", [])),
         }
 
         caminho_completo = os.path.join(
@@ -235,10 +208,6 @@ def avaliar_acessibilidade(url):
     finally:
         driver.quit()
 
-
-# =========================
-# EXECUÇÃO
-# =========================
 
 if __name__ == "__main__":
     url = input("Digite a URL que deseja avaliar: ").strip()
