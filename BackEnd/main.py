@@ -15,7 +15,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 REPORTS_DIR = os.path.join(BASE_DIR, "reports")
 TOTAL_CRITERIOS_WCAG = 50
 API_KEY_GEMINI = "AIzaSyDZzAoLx69jQYIkFNJveVESKAqJH1XXerE"
-
+''' https://aistudio.google.com/u/3/api-keys 
+    caso o codigo nao funciona , atualiza a chave da api'''
 
 def timestamp():
     return datetime.now().strftime("%Y-%m-%d_%H-%M")
