@@ -189,7 +189,7 @@ def avaliar_acessibilidade(url):
     nome_site = extrair_nome_site(url)
     json_dir, txt_dir = criar_pastas_site(nome_site)
 
-    limpar_relatorios_antigos(os.path.join(REPORTS_DIR, nome_site), dias=30)
+    limpar_tudo(os.path.join(REPORTS_DIR, nome_site), dias=30)
 
     driver = iniciar_driver()
     uid = gerar_uuid_curto()
