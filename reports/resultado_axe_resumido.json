@@ -1,0 +1,51 @@
+[
+  {
+    "regra": "button-name",
+    "impacto": "critical",
+    "descricao": "Ensures buttons have discernible text",
+    "ajuda": "Buttons must have discernible text",
+    "elementos_afetados": 17
+  },
+  {
+    "regra": "color-contrast",
+    "impacto": "serious",
+    "descricao": "Ensures the contrast between foreground and background colors meets WCAG 2 AA contrast ratio thresholds",
+    "ajuda": "Elements must have sufficient color contrast",
+    "elementos_afetados": 3
+  },
+  {
+    "regra": "duplicate-id-active",
+    "impacto": "serious",
+    "descricao": "Ensures every id attribute value of active elements is unique",
+    "ajuda": "IDs of active elements must be unique",
+    "elementos_afetados": 1
+  },
+  {
+    "regra": "duplicate-id",
+    "impacto": "minor",
+    "descricao": "Ensures every id attribute value is unique",
+    "ajuda": "id attribute value must be unique",
+    "elementos_afetados": 1
+  },
+  {
+    "regra": "image-redundant-alt",
+    "impacto": "minor",
+    "descricao": "Ensure button and link text is not repeated as image alternative",
+    "ajuda": "Text of buttons and links should not be repeated in the image alternative",
+    "elementos_afetados": 4
+  },
+  {
+    "regra": "landmark-contentinfo-is-top-level",
+    "impacto": "moderate",
+    "descricao": "Ensures the contentinfo landmark is at top level",
+    "ajuda": "Contentinfo landmark must not be contained in another landmark",
+    "elementos_afetados": 1
+  },
+  {
+    "regra": "region",
+    "impacto": "moderate",
+    "descricao": "Ensures all page content is contained by landmarks",
+    "ajuda": "All page content must be contained by landmarks",
+    "elementos_afetados": 1
+  }
+]

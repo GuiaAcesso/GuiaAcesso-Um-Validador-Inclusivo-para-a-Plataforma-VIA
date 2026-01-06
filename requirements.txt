@@ -1,0 +1,7 @@
+Markdown
+pdfkit
+xhtml2pdf
+openai
+selenium
+webdriver-manager
+axe-selenium-python
