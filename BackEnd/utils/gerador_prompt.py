@@ -30,9 +30,15 @@ def gerar_prompt_relatorio(url, resumo_violacoes):
     • Aderência às WCAG 2.1 e ao eMAG
 
     Estrutura esperada:
+    0. Titulo sendo : Relatorio de Acessibilidade Digital do Site (sem o http://{url})
     1. Resumo Executivo (incluindo a nota final)
     2. Nota de Acessibilidade (0 a 100) e justificativa
-    3. Principais Problemas Encontrados
+    3. Principais Problemas Encontrados:
+    3.1. Avaliação considerou os seguintes fatores: 
+    • Quantidade de falhas: numero problemas foram identificados. 
+    • Gravidade das falhas: numero problema crítico, numero graves, numero moderado e numero menor.
+    • Descrição das falhas: breve descrição de cada problema encontrado.
+    • Aderência às WCAG 2.1 e ao eMAG: o site alcançou um nível de conformidade AA,
     4. Impactos para Pessoas com Deficiência
     5. Recomendações Prioritárias
     6. Conclusão

@@ -17,18 +17,12 @@ from utils.llm_relatorio import gerar_relatorio_llm
 from utils.md_pdf import gerar_pdf_relatorio
 
 
-# =========================
-# CONFIGURAÇÕES GERAIS
-# =========================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 REPORTS_DIR = os.path.join(BASE_DIR, "reports")
 TOTAL_CRITERIOS_WCAG = 50
 LOGO_PATH = os.path.join(BASE_DIR, "assets", "logo.png")
 
 
-# =========================
-# FUNÇÕES AUXILIARES
-# =========================
 def timestamp():
     return datetime.now().strftime("%Y-%m-%d_%H-%M")
 
@@ -81,7 +75,8 @@ def identificar_nivel_wcag(tags):
 
 def calcular_conformidade_aa(violacoes):
     violacoes_aa = sum(
-        1 for v in violacoes
+        1
+        for v in violacoes
         if any(tag.endswith(("a", "aa")) for tag in v.get("tags", []))
     )
     aprovados = TOTAL_CRITERIOS_WCAG - violacoes_aa
@@ -104,9 +99,6 @@ def gerar_relatorio_resumido(resultados):
     }
 
 
-# =========================
-# RELATÓRIOS
-# =========================
 def gerar_relatorio_manual(caminho_json, caminho_txt):
     with open(caminho_json, encoding="utf-8") as f:
         dados = json.load(f)
@@ -119,12 +111,14 @@ def gerar_relatorio_manual(caminho_json, caminho_txt):
     ]
 
     for i, p in enumerate(dados["problemas"], 1):
-        linhas.extend([
-            f"{i}. {p['descricao']}",
-            f"   Impacto: {p['impacto']}",
-            f"   Nível WCAG: {', '.join(p['nivel_wcag'])}",
-            f"   Elementos afetados: {p['elementos_afetados']}\n",
-        ])
+        linhas.extend(
+            [
+                f"{i}. {p['descricao']}",
+                f"   Impacto: {p['impacto']}",
+                f"   Nível WCAG: {', '.join(p['nivel_wcag'])}",
+                f"   Elementos afetados: {p['elementos_afetados']}\n",
+            ]
+        )
 
     linhas.append("Correções são recomendadas para melhoria da acessibilidade.")
 
@@ -144,18 +138,37 @@ def gerar_relatorio_llm_txt(url, resumo_json, caminho_txt):
     print("Relatório humanizado gerado por LLM (Groq)")
 
 
-# =========================
-# SELENIUM
-# =========================
 def iniciar_driver():
     options = ChromeOptions()
+
     options.add_argument("--headless=new")
     options.add_argument("--disable-gpu")
 
-    return webdriver.Chrome(
+    options.add_argument("--window-size=1920,1080")
+
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-infobars")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-software-rasterizer")
+    options.add_argument("--disable-background-networking")
+    options.add_argument("--disable-background-timer-throttling")
+    options.add_argument("--disable-renderer-backgrounding")
+    options.add_argument("--disable-client-side-phishing-detection")
+    options.add_argument("--disable-popup-blocking")
+
+    options.add_argument("--log-level=3")
+
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+
+    driver = webdriver.Chrome(
         service=ChromeService(ChromeDriverManager().install()),
         options=options,
     )
+
+    driver.execute_cdp_cmd("Page.setWebLifecycleState", {"state": "frozen"})
+
+    return driver
 
 
 def obter_url_valida():
@@ -179,9 +192,20 @@ def obter_url_valida():
                 driver.quit()
 
 
-# =========================
-# FLUXO PRINCIPAL
-# =========================
+def limpar_pycache(pasta_base):
+    """Apaga todos os __pycache__ dentro de pasta_base recursivamente"""
+    for root, dirs, _ in os.walk(pasta_base):
+        for d in dirs:
+            if d == "__pycache__":
+                caminho = os.path.join(root, d)
+                try:
+                    for arquivo in os.listdir(caminho):
+                        os.remove(os.path.join(caminho, arquivo))
+                    os.rmdir(caminho)
+                except Exception as e:
+                    print(f"Erro ao limpar {caminho}: {e}")
+
+
 def avaliar_acessibilidade(url):
     nome_site = extrair_nome_site(url)
     json_dir, txt_dir, _ = criar_pastas_site(nome_site)
@@ -207,8 +231,12 @@ def avaliar_acessibilidade(url):
 
         nome_base = f"{nome_site}_relatorio_humanizado_{data}_{uid}"
 
-        caminho_completo = os.path.join(json_dir, f"{nome_site}_completo_{data}_{uid}.json")
-        caminho_resumido = os.path.join(json_dir, f"{nome_site}_resumido_{data}_{uid}.json")
+        caminho_completo = os.path.join(
+            json_dir, f"{nome_site}_completo_{data}_{uid}.json"
+        )
+        caminho_resumido = os.path.join(
+            json_dir, f"{nome_site}_resumido_{data}_{uid}.json"
+        )
         caminho_txt = os.path.join(txt_dir, f"{nome_base}.txt")
 
         with open(caminho_completo, "w", encoding="utf-8") as f:
@@ -245,3 +273,4 @@ if __name__ == "__main__":
     os.system("cls" if os.name == "nt" else "clear")
     url_valida = obter_url_valida()
     avaliar_acessibilidade(url_valida)
+    limpar_pycache(BASE_DIR)
