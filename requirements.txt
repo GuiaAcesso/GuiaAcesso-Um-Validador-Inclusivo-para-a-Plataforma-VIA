@@ -1,8 +1,8 @@
-selenium==4.27.1
+selenium==4.38.0
 webdriver-manager==4.0.2
-axe-selenium-python==2.1.6
+axe-selenium==2.1.6
 python-dotenv==1.0.1
-openai==1.59.3
+openai==2.13.0
 markdown==3.7
 xhtml2pdf==0.2.16
 pypdf==5.1.0
