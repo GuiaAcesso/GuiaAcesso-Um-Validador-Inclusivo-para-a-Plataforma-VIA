@@ -58,9 +58,9 @@ O sistema analisa páginas web, identifica falhas de acessibilidade, calcula o n
 ### 1️⃣ Clone o repositório
 
 ```bash
-- *git clone https://github.com.seu-usuarioGuiaAcesso-Um-Validador-Inclusivo-para-a-Plataforma-VIA.git*
+git clone https://github.com.seu-usuarioGuiaAcesso-Um-Validador-Inclusivo-para-a-Plataforma-VIA.git
 
-- *cd GuiaAcesso-Um-Validador-Inclusivo-para-a-Plataforma-VIA
+cd GuiaAcesso-Um-Validador-Inclusivo-para-a-Plataforma-VIA
 ```
 ### 2️⃣ Instale todas as dependências (de uma só vez)
 
@@ -79,13 +79,13 @@ Crie um arquivo chamado `.env` na raiz do projeto e adicione a chave da API conf
 
 Entre na pasta BackEnd:
 ```
-- *cd BackEnd*
+cd BackEnd
 ```
 
 Execute o arquivo principal:
 
 ```
-- *python main.py*
+python main.py
 ```
 
 Também é possível executar o arquivo main.py diretamente pela sua IDE.
