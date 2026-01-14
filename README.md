@@ -66,7 +66,7 @@ cd GuiaAcesso-Um-Validador-Inclusivo-para-a-Plataforma-VIA
 
 ⚠️ Este comando deve ser executado na RAIZ do projeto
 ```
-- *pip install -r requirements.txt*
+pip install -r requirements.txt
 ```
 Esse comando instalará todas as bibliotecas necessárias, com versões compatíveis, de forma automática.
 ### 3️⃣ Crie o arquivo `.env`
