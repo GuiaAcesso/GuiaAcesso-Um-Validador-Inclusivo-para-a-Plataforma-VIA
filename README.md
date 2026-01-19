@@ -71,7 +71,7 @@ pip install -r requirements.txt
 Esse comando instalará todas as bibliotecas necessárias, com versões compatíveis, de forma automática.
 ### 3️⃣ Crie o arquivo `.env`
 
-Crie um arquivo chamado `.env` na raiz do projeto e adicione a chave da API conforme o modelo disponível em `.env.example`.
+Crie um arquivo chamado `.env` na raiz do projeto e adicione a chave da API do site https://console.groq.com/keys conforme o modelo disponível em `.env.example`.
 
 > ⚠️ **Importante:** nunca versionar o arquivo `.env`. Ele contém informações sensíveis.
 
