@@ -151,16 +151,52 @@ BackEnd/
 
 Um agradecimento especial às pessoas que contribuíram para este projeto:
 
-- [Andreza Gomes](https://github.com/AndrezaGSantana)
 
-- [Clodoaldo Junior](https://github.com/C-Juniorr)
+## 🤝 Time de Desenvolvimento
 
-- [Guinevere Cavalcanti](https://github.com/Veroshy)
-
-- [João Victor](https://github.com/jotav06)
-
-- [Maria Cantalice](https://github.com/MCantalice)
-
-- [Thais Adryene](https://github.com/thais-collab)
-
-- [Willians Keiichi](https://github.com/wk-ss)
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Veroshy">
+        <img src="https://github.com/Veroshy.png" width="80px;" alt="Foto Guinevere"/><br>
+        <sub><b>Guinevere Cavalcanti</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/wk-ss">
+        <img src="https://github.com/wk-ss.png" width="80px;" alt="Foto Willians"/><br>
+        <sub><b>Willians Keiichi</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/AndrezaGSantana">
+        <img src="https://github.com/AndrezaGSantana.png" width="80px;" alt="Foto Andreza"/><br>
+        <sub><b>Andreza Gomes</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/MCantalice">
+        <img src="https://github.com/MCantalice.png" width="80px;" alt="Foto Maria"/><br>
+        <sub><b>Maria Cantalice</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/thais-collab">
+        <img src="https://github.com/thais-collab.png" width="80px;" alt="Foto Thais"/><br>
+        <sub><b>Thais Adryene</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/C-Juniorr">
+        <img src="https://github.com/C-Juniorr.png" width="80px;" alt="Foto Clodoaldo"/><br>
+        <sub><b>Clodoaldo Junior</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/jotav06">
+        <img src="https://github.com/jotav06.png" width="80px;" alt="Foto João"/><br>
+        <sub><b>João Victor</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
