@@ -1,5 +1,7 @@
 ###### PT-BR
 
+<p align="center"> <img src="https://github.com/user-attachments/assets/737e6cbc-b78f-4f43-b7e9-519dc6679b1b" width="700">
+
 # GuiaAcesso — VIA  
 ### Validador Inclusivo de Acessibilidade Digital (WCAG)
 
